@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Microsoft.Win32;
+using System.Windows.Media;
 
 namespace WorkWithStl
 { /// <summary>
@@ -30,9 +31,11 @@ namespace WorkWithStl
 
                 //Import 3D model file
                 ModelImporter import = new ModelImporter();
-
+                Material material = new DiffuseMaterial(new SolidColorBrush(Colors.Silver));
                 //Load the 3D model file
+                import.DefaultMaterial = material;
                 device = import.Load(model);
+               
             }
             catch (Exception e)
             {
@@ -53,8 +56,9 @@ private void OpenFile(object sender, RoutedEventArgs e)
                 device3D.Content = Display3d(FilePath);
                 viewPort3d.Children.Clear();
                 // Добавление в порт
+               
                 viewPort3d.Children.Add(device3D);
-                viewPort3d.Children.Add(new DefaultLights());
+                viewPort3d.Children.Add(new SunLight());
                 viewPort3d.ZoomExtents();
                 
             }

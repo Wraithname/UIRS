@@ -6,7 +6,7 @@
     <Grid>
         <helix:HelixViewport3D x:Name="viewPort3d" ZoomExtentsWhenLoaded="True" ShowCoordinateSystem="True" Margin="0,30,0,0">
             <!-- Remember to add light to the scene -->
-            <helix:DefaultLights/>
+            <helix:SunLight/>
         </helix:HelixViewport3D>
         <Menu Height="25" VerticalAlignment="Top">
             <MenuItem Header="File">
