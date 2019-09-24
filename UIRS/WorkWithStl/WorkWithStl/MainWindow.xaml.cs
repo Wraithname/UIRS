@@ -5,6 +5,8 @@ using System.Windows.Input;
 using System.Windows.Media.Media3D;
 using Microsoft.Win32;
 using System.Windows.Media;
+using STL_Tools;
+using System.Collections.Generic;
 
 namespace WorkWithStl
 { /// <summary>
@@ -52,6 +54,8 @@ private void OpenFile(object sender, RoutedEventArgs e)
             if(openFileDialog.ShowDialog()==true)
             {
                 FilePath = openFileDialog.FileName;
+                STLReader stlReader = new STLReader(openFileDialog.FileName);
+                TriangleMesh[] meshArray = stlReader.ReadFile();
                 ModelVisual3D device3D = new ModelVisual3D();
                 device3D.Content = Display3d(FilePath);
                 viewPort3d.Children.Clear();
