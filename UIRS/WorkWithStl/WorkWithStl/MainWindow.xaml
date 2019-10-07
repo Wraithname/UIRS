@@ -4,7 +4,7 @@
         xmlns:helix="http://helix-toolkit.org/wpf"
         Title="UIRS" Height="550" Width="725">
     <Grid>
-        <helix:HelixViewport3D x:Name="viewPort3d" ZoomExtentsWhenLoaded="True" ShowCoordinateSystem="True" Margin="0,30,0,0">
+        <helix:HelixViewport3D x:Name="viewPort3d" ZoomExtentsWhenLoaded="True" ShowFrameRate="True" ShowCoordinateSystem="True" Margin="0,30,0,0">
             <!-- Remember to add light to the scene -->
             <helix:SunLight/>
         </helix:HelixViewport3D>
@@ -12,6 +12,11 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open file" Click="OpenFile"></MenuItem>
                 <MenuItem Header="Exit" Click="Quit"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Counter">
+                <MenuItem Header="Show counter" Click="showCounter"></MenuItem>
+                <MenuItem Header="Show model" Click="showModel"></MenuItem>
+                <MenuItem Header="Show model with counter" Click="showModelCounter"></MenuItem>
             </MenuItem>
         </Menu>
     </Grid>
