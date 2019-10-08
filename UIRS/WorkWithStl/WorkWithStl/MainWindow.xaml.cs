@@ -17,6 +17,7 @@ namespace WorkWithStl
     {
         private Plane3D ContourPlane;
         private ModelVisual3D device3D = new ModelVisual3D();
+        private TriangleMesh[] meshArray;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,15 +33,13 @@ namespace WorkWithStl
             try
             {
                 //Adding a gesture here
-                viewPort3d.RotateGesture = new MouseGesture(MouseAction.LeftClick);
-
+                viewPort3d.RotateGesture = new MouseGesture(MouseAction.RightClick);
                 //Import 3D model file
                 ModelImporter import = new ModelImporter();
                 Material material = new DiffuseMaterial(new SolidColorBrush(Colors.Silver));
                 //Load the 3D model file
                 import.DefaultMaterial = material;
                 device = import.Load(model);
-               
             }
             catch (Exception e)
             {
@@ -49,24 +48,24 @@ namespace WorkWithStl
             }
             return device;
         }
-private void OpenFile(object sender, RoutedEventArgs e)
+        private void OpenFile(object sender, RoutedEventArgs e)
         {
-           
-            string FilePath=null; 
+            string FilePath = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if(openFileDialog.ShowDialog()==true)
+            if (openFileDialog.ShowDialog() == true)
             {
                 FilePath = openFileDialog.FileName;
                 STLReader stlReader = new STLReader(openFileDialog.FileName);
-                TriangleMesh[] meshArray = stlReader.ReadFile();
-                TriangleMesh[] normalArray = new TriangleMesh[meshArray.Length];  
+                meshArray = stlReader.ReadFile();
+                TriangleMesh[] normalArray = new TriangleMesh[meshArray.Length];
                 device3D.Content = Display3d(FilePath);
+
                 viewPort3d.Children.Clear();
                 // Добавление в порт
                 viewPort3d.Children.Add(device3D);
                 viewPort3d.Children.Add(new SunLight());
                 viewPort3d.ZoomExtents();
-                
+
             }
         }
 
@@ -108,7 +107,7 @@ private void OpenFile(object sender, RoutedEventArgs e)
         private void showCounter(object sender, RoutedEventArgs e)
         {
             viewPort3d.Children.Clear();
-            AddContours(device3D, 5,5, 5);
+            AddContours(device3D, 5, 5, 5);
         }
         private void showModel(object sender, RoutedEventArgs e)
         {
@@ -124,6 +123,35 @@ private void OpenFile(object sender, RoutedEventArgs e)
             viewPort3d.Children.Add(new SunLight());
             viewPort3d.ZoomExtents();
             AddContours(device3D, 5, 5, 5);
+        }
+        private void cutModel(object sender, RoutedEventArgs e)
+        {
+            RectangleVisual3D plane = new RectangleVisual3D();
+            plane.Origin = new Point3D(0, 0, 0);
+            plane.Width = 10;
+            plane.Length = 10;
+            TranslateManipulator manipulator1 = new TranslateManipulator();
+            manipulator1.Bind(plane);
+            manipulator1.Color = Colors.Red;
+            manipulator1.Direction = new Vector3D(1, 0, 0);
+            manipulator1.Diameter = 0.2;
+            manipulator1.Length = plane.Length / 2;
+            TranslateManipulator manipulator2 = new TranslateManipulator();
+            manipulator2.Bind(plane);
+            manipulator2.Color = Colors.Green;
+            manipulator2.Direction = new Vector3D(0, 1, 0);
+            manipulator2.Diameter = 0.2;
+            manipulator2.Length = plane.Length / 2;
+            TranslateManipulator manipulator3 = new TranslateManipulator();
+            manipulator3.Bind(plane);
+            manipulator3.Color = Colors.Blue;
+            manipulator3.Direction = new Vector3D(0, 0, 1);
+            manipulator3.Diameter = 0.2;
+            manipulator3.Length = plane.Length/2;
+            viewPort3d.Children.Add(plane);
+            viewPort3d.Children.Add(manipulator1);
+            viewPort3d.Children.Add(manipulator2);
+            viewPort3d.Children.Add(manipulator3);
         }
     }
 }
