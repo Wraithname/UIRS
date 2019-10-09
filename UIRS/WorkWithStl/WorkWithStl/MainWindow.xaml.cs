@@ -15,6 +15,7 @@ namespace WorkWithStl
   /// </summary>
     public partial class MainWindow : Window
     {
+        private Model3D device = null;
         private Plane3D ContourPlane;
         private ModelVisual3D device3D = new ModelVisual3D();
         private TriangleMesh[] meshArray;
@@ -29,14 +30,13 @@ namespace WorkWithStl
         /// <returns>3D Model Content</returns>
         private Model3D Display3d(string model)
         {
-            Model3D device = null;
+            
             try
             {
                 //Adding a gesture here
                 viewPort3d.RotateGesture = new MouseGesture(MouseAction.RightClick);
-                //Import 3D model file
-                ModelImporter import = new ModelImporter();
                 Material material = new DiffuseMaterial(new SolidColorBrush(Colors.Silver));
+                ModelImporter import = new ModelImporter();
                 //Load the 3D model file
                 import.DefaultMaterial = material;
                 device = import.Load(model);
@@ -54,17 +54,36 @@ namespace WorkWithStl
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                FilePath = openFileDialog.FileName;
-                STLReader stlReader = new STLReader(openFileDialog.FileName);
-                meshArray = stlReader.ReadFile();
-                TriangleMesh[] normalArray = new TriangleMesh[meshArray.Length];
+                    FilePath = openFileDialog.FileName;
+                    STLReader stlReader = new STLReader(openFileDialog.FileName);
+                    meshArray = stlReader.ReadFile();
+                    TriangleMesh[] normalArray = new TriangleMesh[meshArray.Length];
+                //Перобразование в лист Point3D
+                //IList<Point3D> point = new List<Point3D>();
+                //for(int i=0;i<meshArray.Length;i++)
+                //{
+                //    Point3D pt1 = new Point3D(meshArray[i].vert1.x, meshArray[i].vert1.y, meshArray[i].vert1.z);
+                //    if (point.FirstOrDefault(u => (u.X == pt1.X & u.Y == pt1.Y & u.Z == pt1.Z)) == null)
+                //    {
+                //        point.Add(new Point3D(meshArray[i].vert1.x, meshArray[i].vert1.y, meshArray[i].vert1.z));
+                //    }
+                //    Point3D pt2 = new Point3D(meshArray[i].vert2.x, meshArray[i].vert2.y, meshArray[i].vert2.z);
+                //    if (point.FirstOrDefault(u => (u.X == meshArray[i].vert2.x & u.Y == meshArray[i].vert2.y & u.Z == meshArray[i].vert2.z)) == null)
+                //    {
+                //        point.Add(new Point3D(meshArray[i].vert2.x, meshArray[i].vert2.y, meshArray[i].vert2.z));
+                //    }
+                //    Point3D pt3 = new Point3D(meshArray[i].vert3.x, meshArray[i].vert3.y, meshArray[i].vert3.z);
+                //    if (point.FirstOrDefault(u => (u.X == meshArray[i].vert3.x & u.Y == meshArray[i].vert3.y & u.Z == meshArray[i].vert3.z)) == null)
+                //    {
+                //        point.Add(new Point3D(meshArray[i].vert3.x, meshArray[i].vert3.y, meshArray[i].vert3.z));
+                //    }
+                //}
                 device3D.Content = Display3d(FilePath);
-
-                viewPort3d.Children.Clear();
-                // Добавление в порт
-                viewPort3d.Children.Add(device3D);
-                viewPort3d.Children.Add(new SunLight());
-                viewPort3d.ZoomExtents();
+                    viewPort3d.Children.Clear();
+                    // Добавление в порт
+                    viewPort3d.Children.Add(device3D);
+                    viewPort3d.Children.Add(new SunLight());
+                    viewPort3d.ZoomExtents();
 
             }
         }
@@ -127,31 +146,45 @@ namespace WorkWithStl
         private void cutModel(object sender, RoutedEventArgs e)
         {
             RectangleVisual3D plane = new RectangleVisual3D();
-            plane.Origin = new Point3D(0, 0, 0);
-            plane.Width = 10;
-            plane.Length = 10;
+            plane.Origin = new Point3D(-4, -1, 1);
+            plane.Width = device.Bounds.SizeY;
+            plane.Length = device.Bounds.SizeX;
             TranslateManipulator manipulator1 = new TranslateManipulator();
             manipulator1.Bind(plane);
             manipulator1.Color = Colors.Red;
             manipulator1.Direction = new Vector3D(1, 0, 0);
-            manipulator1.Diameter = 0.2;
+            manipulator1.Diameter = 0.5;
             manipulator1.Length = plane.Length / 2;
             TranslateManipulator manipulator2 = new TranslateManipulator();
             manipulator2.Bind(plane);
             manipulator2.Color = Colors.Green;
             manipulator2.Direction = new Vector3D(0, 1, 0);
-            manipulator2.Diameter = 0.2;
+            manipulator2.Diameter = 0.5;
             manipulator2.Length = plane.Length / 2;
             TranslateManipulator manipulator3 = new TranslateManipulator();
             manipulator3.Bind(plane);
             manipulator3.Color = Colors.Blue;
             manipulator3.Direction = new Vector3D(0, 0, 1);
-            manipulator3.Diameter = 0.2;
+            manipulator3.Diameter = 0.5;
             manipulator3.Length = plane.Length/2;
             viewPort3d.Children.Add(plane);
             viewPort3d.Children.Add(manipulator1);
             viewPort3d.Children.Add(manipulator2);
             viewPort3d.Children.Add(manipulator3);
+        }
+        private Transform3DGroup GetTransforms(Model3D model)
+        {
+            var transforms = new Transform3DGroup();
+            // Rotation around X
+            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0)));
+            // Rotation around Y 
+            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0)));
+            // Rotation around Z
+            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0)));
+            // Translate transform (if required)
+            transforms.Children.Add(new TranslateTransform3D());
+            model.Transform = transforms;
+            return transforms;
         }
     }
 }

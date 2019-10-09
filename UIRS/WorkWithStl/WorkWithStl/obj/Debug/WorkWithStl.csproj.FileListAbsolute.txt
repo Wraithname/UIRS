@@ -55,3 +55,7 @@ C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\obj\Debug\WorkW
 C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\obj\Debug\WorkWithStl.csproj.CopyComplete
 C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\obj\Debug\WorkWithStl.exe
 C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\obj\Debug\WorkWithStl.pdb
+C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\bin\Debug\Cyotek.Drawing.BitmapFont.dll
+C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\bin\Debug\HelixToolkit.Wpf.SharpDX.dll
+C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\bin\Debug\Cyotek.Drawing.BitmapFont.pdb
+C:\Users\user\Documents\GitHub\UIRS\UIRS\WorkWithStl\WorkWithStl\bin\Debug\HelixToolkit.Wpf.SharpDX.xml
