@@ -19,6 +19,8 @@ namespace WorkWithStl
         private Plane3D ContourPlane;
         private ModelVisual3D device3D = new ModelVisual3D();
         private TriangleMesh[] meshArray;
+        private List<Point3D> point = new List<Point3D>();
+        private List<Point3D> list = new List<Point3D>();
         public MainWindow()
         {
             InitializeComponent();
@@ -59,25 +61,14 @@ namespace WorkWithStl
                     meshArray = stlReader.ReadFile();
                     TriangleMesh[] normalArray = new TriangleMesh[meshArray.Length];
                 //Перобразование в лист Point3D
-                //IList<Point3D> point = new List<Point3D>();
-                //for(int i=0;i<meshArray.Length;i++)
-                //{
-                //    Point3D pt1 = new Point3D(meshArray[i].vert1.x, meshArray[i].vert1.y, meshArray[i].vert1.z);
-                //    if (point.FirstOrDefault(u => (u.X == pt1.X & u.Y == pt1.Y & u.Z == pt1.Z)) == null)
-                //    {
-                //        point.Add(new Point3D(meshArray[i].vert1.x, meshArray[i].vert1.y, meshArray[i].vert1.z));
-                //    }
-                //    Point3D pt2 = new Point3D(meshArray[i].vert2.x, meshArray[i].vert2.y, meshArray[i].vert2.z);
-                //    if (point.FirstOrDefault(u => (u.X == meshArray[i].vert2.x & u.Y == meshArray[i].vert2.y & u.Z == meshArray[i].vert2.z)) == null)
-                //    {
-                //        point.Add(new Point3D(meshArray[i].vert2.x, meshArray[i].vert2.y, meshArray[i].vert2.z));
-                //    }
-                //    Point3D pt3 = new Point3D(meshArray[i].vert3.x, meshArray[i].vert3.y, meshArray[i].vert3.z);
-                //    if (point.FirstOrDefault(u => (u.X == meshArray[i].vert3.x & u.Y == meshArray[i].vert3.y & u.Z == meshArray[i].vert3.z)) == null)
-                //    {
-                //        point.Add(new Point3D(meshArray[i].vert3.x, meshArray[i].vert3.y, meshArray[i].vert3.z));
-                //    }
-                //}
+                for(int i = 0; i < meshArray.Length; i++)
+                {
+                    point.Add(new Point3D(meshArray[i].vert1.x,meshArray[i].vert1.y,meshArray[i].vert1.z));
+                    point.Add(new Point3D(meshArray[i].vert2.x, meshArray[i].vert2.y, meshArray[i].vert2.z));
+                    point.Add(new Point3D(meshArray[i].vert3.x, meshArray[i].vert3.y, meshArray[i].vert3.z));
+                }
+                //удаление дубликатов точек
+                list = point.Distinct().ToList<Point3D>();
                 device3D.Content = Display3d(FilePath);
                     viewPort3d.Children.Clear();
                     // Добавление в порт
@@ -167,6 +158,9 @@ namespace WorkWithStl
             manipulator3.Direction = new Vector3D(0, 0, 1);
             manipulator3.Diameter = 0.5;
             manipulator3.Length = plane.Length/2;
+            //Разрез
+
+            //Добавление в порт
             viewPort3d.Children.Add(plane);
             viewPort3d.Children.Add(manipulator1);
             viewPort3d.Children.Add(manipulator2);
