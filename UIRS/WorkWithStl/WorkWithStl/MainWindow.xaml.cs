@@ -53,6 +53,7 @@ namespace WorkWithStl
         private void OpenFile(object sender, RoutedEventArgs e)
         {
             string FilePath = null;
+            var modelGroup = new Model3DGroup();
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
@@ -69,11 +70,29 @@ namespace WorkWithStl
                 }
                 //удаление дубликатов точек
                 list = point.Distinct().ToList<Point3D>();
+                //Преобразование в модель
+                MeshBuilder msh = new MeshBuilder();
+                for(int k=0;k<list.Count;k++)
+                msh.AddBox(list[k],0.1,0.1,0.1);
+                var gm = new GeometryModel3D();
+                var mesh = msh.ToMesh(true);
+                var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
+                var insideMaterial = MaterialHelper.CreateMaterial(Colors.Yellow);
                 device3D.Content = Display3d(FilePath);
                     viewPort3d.Children.Clear();
-                    // Добавление в порт
-                    viewPort3d.Children.Add(device3D);
-                    viewPort3d.Children.Add(new SunLight());
+                // Добавление в порт
+                //                    viewPort3d.Children.Add(device3D);
+                modelGroup.Children.Add(new GeometryModel3D
+                {
+                    Geometry = mesh,
+                    Material = greenMaterial,
+                    BackMaterial = insideMaterial
+                });
+                device = modelGroup;
+                device3D.Content = device;
+                //--------------------------------------
+                viewPort3d.Children.Add(device3D);
+                viewPort3d.Children.Add(new SunLight());
                     viewPort3d.ZoomExtents();
 
             }
