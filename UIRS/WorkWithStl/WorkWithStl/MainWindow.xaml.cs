@@ -53,7 +53,7 @@ namespace WorkWithStl
         private void OpenFile(object sender, RoutedEventArgs e)
         {
             string FilePath = null;
-            var modelGroup = new Model3DGroup();
+           
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
@@ -71,31 +71,34 @@ namespace WorkWithStl
                 //удаление дубликатов точек
                 list = point.Distinct().ToList<Point3D>();
                 //Преобразование в модель
-                MeshBuilder msh = new MeshBuilder();
-                for(int k=0;k<list.Count;k++)
-                msh.AddBox(list[k],0.1,0.1,0.1);
-                var gm = new GeometryModel3D();
-                var mesh = msh.ToMesh(true);
-                var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
-                var insideMaterial = MaterialHelper.CreateMaterial(Colors.Yellow);
-                device3D.Content = Display3d(FilePath);
-                    viewPort3d.Children.Clear();
-                // Добавление в порт
-                //                    viewPort3d.Children.Add(device3D);
-                modelGroup.Children.Add(new GeometryModel3D
-                {
-                    Geometry = mesh,
-                    Material = greenMaterial,
-                    BackMaterial = insideMaterial
-                });
-                device = modelGroup;
+                device = create3dmodel(list);
                 device3D.Content = device;
+                Cutt.IsEnabled = true;
+                Count.IsEnabled = true;
                 //--------------------------------------
                 viewPort3d.Children.Add(device3D);
                 viewPort3d.Children.Add(new SunLight());
                     viewPort3d.ZoomExtents();
 
             }
+        }
+        private Model3DGroup create3dmodel(List<Point3D> list)
+        {
+            var modelGroup = new Model3DGroup();
+            MeshBuilder msh = new MeshBuilder();
+            for (int k = 0; k < list.Count; k++)
+                msh.AddBox(list[k], 0.1, 0.1, 0.1);
+            var gm = new GeometryModel3D();
+            var mesh = msh.ToMesh(true);
+            var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
+            var insideMaterial = MaterialHelper.CreateMaterial(Colors.Yellow);
+            modelGroup.Children.Add(new GeometryModel3D
+            {
+                Geometry = mesh,
+                Material = greenMaterial,
+                BackMaterial = insideMaterial
+            });
+            return modelGroup;
         }
 
         private void Quit(object sender, RoutedEventArgs e)
@@ -155,49 +158,39 @@ namespace WorkWithStl
         }
         private void cutModel(object sender, RoutedEventArgs e)
         {
-            RectangleVisual3D plane = new RectangleVisual3D();
-            plane.Origin = new Point3D(-4, -1, 1);
-            plane.Width = device.Bounds.SizeY;
-            plane.Length = device.Bounds.SizeX;
-            TranslateManipulator manipulator1 = new TranslateManipulator();
-            manipulator1.Bind(plane);
-            manipulator1.Color = Colors.Red;
-            manipulator1.Direction = new Vector3D(1, 0, 0);
-            manipulator1.Diameter = 0.5;
-            manipulator1.Length = plane.Length / 2;
-            TranslateManipulator manipulator2 = new TranslateManipulator();
-            manipulator2.Bind(plane);
-            manipulator2.Color = Colors.Green;
-            manipulator2.Direction = new Vector3D(0, 1, 0);
-            manipulator2.Diameter = 0.5;
-            manipulator2.Length = plane.Length / 2;
-            TranslateManipulator manipulator3 = new TranslateManipulator();
-            manipulator3.Bind(plane);
-            manipulator3.Color = Colors.Blue;
-            manipulator3.Direction = new Vector3D(0, 0, 1);
-            manipulator3.Diameter = 0.5;
-            manipulator3.Length = plane.Length/2;
-            //Разрез
-
-            //Добавление в порт
-            viewPort3d.Children.Add(plane);
-            viewPort3d.Children.Add(manipulator1);
-            viewPort3d.Children.Add(manipulator2);
-            viewPort3d.Children.Add(manipulator3);
-        }
-        private Transform3DGroup GetTransforms(Model3D model)
+            slider.IsEnabled = true;
+            
+         }
+        private void Updater(double z)
         {
-            var transforms = new Transform3DGroup();
-            // Rotation around X
-            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 0)));
-            // Rotation around Y 
-            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0)));
-            // Rotation around Z
-            transforms.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0)));
-            // Translate transform (if required)
-            transforms.Children.Add(new TranslateTransform3D());
-            model.Transform = transforms;
-            return transforms;
+            viewPort3d.Children.Clear();
+            var modelGroup = new Model3DGroup();
+            MeshBuilder msh = new MeshBuilder();
+            for (int k = 0; k < list.Count; k++)
+            {
+                if(list[k].Z>z)
+                msh.AddBox(list[k], 0.1, 0.1, 0.1);
+            }
+            var gm = new GeometryModel3D();
+            var mesh = msh.ToMesh(true);
+            var greenMaterial = MaterialHelper.CreateMaterial(Colors.Green);
+            var insideMaterial = MaterialHelper.CreateMaterial(Colors.Yellow);
+            modelGroup.Children.Add(new GeometryModel3D
+            {
+                Geometry = mesh,
+                Material = greenMaterial,
+                BackMaterial = insideMaterial
+            });
+            device = modelGroup;
+            device3D.Content = device;
+            //--------------------------------------
+
+            viewPort3d.Children.Add(new SunLight());
+            viewPort3d.Children.Add(device3D);
+        }
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Updater(slider.Value);
         }
     }
 }
