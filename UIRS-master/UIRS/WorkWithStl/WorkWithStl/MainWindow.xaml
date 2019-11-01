@@ -1,0 +1,28 @@
+﻿<Window x:Class="WorkWithStl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:helix="http://helix-toolkit.org/wpf"
+        
+        WindowState="Maximized"
+        Title="UIRS" Height="550" Width="725">
+    <Grid>
+        <helix:HelixViewport3D x:Name="viewPort3d" ZoomExtentsWhenLoaded="True" ShowFrameRate="True" ShowCoordinateSystem="True" Margin="0,61,0,0">
+            <!-- Remember to add light to the scene -->
+            <helix:SunLight/>
+        </helix:HelixViewport3D>
+        <Menu Height="25" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open file" Click="OpenFile"></MenuItem>
+                <MenuItem Header="Exit" Click="Quit"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="Count" Header="Counter" IsEnabled="false">
+                <MenuItem Header="Show counter" Click="showCounter"></MenuItem>
+                <MenuItem Header="Show model" Click="showModel"></MenuItem>
+                <MenuItem Header="Show model with counter" Click="showModelCounter"></MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="Cutt" Header="Cut" IsEnabled="false" Click="cutModel">
+            </MenuItem>
+        </Menu>
+        <Slider x:Name="slider" IsEnabled="false"  HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Width="528" ValueChanged="Slider_ValueChanged" Maximum="12"/>
+    </Grid>
+</Window>
