@@ -94,11 +94,11 @@ namespace WorkWithStl
             var modelGroup = new Model3DGroup();
             MeshBuilder msh = new MeshBuilder();
             for (int k = 0; k < list.Count; k++)
-                if (list[k].Z < 7 && list[k].Z > 6.9)
-                {
+                //if (list[k].Z < 7 && list[k].Z > 6.9)
+                //{
                     //  msh.AddBox(list[k], 0.1, 0.1, 0.1);
                     list_counter.Add(list[k]);
-                }
+                //}
             for (int i = 0; i < list_counter.Count; i++)
             {
                 list_contr.Add(new Point3D(list_counter[i].X, list_counter[i].Y, -1));
